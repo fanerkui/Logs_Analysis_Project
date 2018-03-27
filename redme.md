@@ -7,6 +7,7 @@ I use my code to generate a logs analysis report allowing help us analysis data 
 * Download log_analysis.py;
 * Move log_analysis.py to vagrant;
 * run python log_analysis.py commands;
+* open report.txt;
 * Then you can see a logs analysis report.
 
 ## Views

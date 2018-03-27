@@ -1,7 +1,13 @@
 import psycopg2
 
+"""Get a log report.
 
-def get_log_analysis(query_command):
+"""
+
+filename = 'report.txt'
+
+
+def get_log_analysis(query_command, flag):
     '''Get PostgresSQL database logs analysis report.
     '''
     DB = psycopg2.connect("dbname=news")
@@ -9,7 +15,13 @@ def get_log_analysis(query_command):
     c.execute(query_command)
     rows = c.fetchall()
     for row in rows:
-        print " ", row[0], "-->", row[1]
+        if flag == 1:
+            with open(filename, 'a') as file_object:
+                file_object.write(str(row[0])+" -- ")
+                file_object.write(str(row[1]*100)[0:3]+"% errors\n")
+        else:
+            with open(filename, 'a') as file_object:
+                file_object.write(""+str(row[0])+" -- "+str(row[1])+" views\n")
     DB.close()
 
 
@@ -31,9 +43,12 @@ query = "select articles.title, num \
     order by num desc) as logtitle \
     where articles.slug = logslug \
     limit 3;"
-print("1.What are the most popular three articles of all time?")
-print("answer:")
-get_log_analysis(query)
+doubtstr = "1.What are the most popular \
+three articles of all time? \n"
+with open(filename, 'w') as file_object:
+    file_object.write(doubtstr)
+    file_object.write("answer: \n")
+get_log_analysis(query, 0)
 print("")
 
 query = "select authors.name, count(*) as views \
@@ -45,9 +60,12 @@ query = "select authors.name, count(*) as views \
     and articles.author = authors.id \
     group by authors.name \
     order by views desc;"
-print("2. Who are the most popular article authors of all time?")
-print("answer:")
-get_log_analysis(query)
+doubtstr = "\n2. Who are the most popular \
+article authors of all time? \n"
+with open(filename, 'a') as file_object:
+    file_object.write(doubtstr)
+    file_object.write("answer: \n")
+get_log_analysis(query, 0)
 print("")
 
 query = "create or replace view totalview as \
@@ -71,7 +89,10 @@ query = "select totalview.date, \
     from totalview, errorview \
     where totalview.date = errorview.date \
     and ((1.0 * errorview.errornum) / (1.0 * totalview.totalnum)) > 0.01;"
-print("3. On which days did more than 0.01 of requests lead to errors?")
-print("answer:")
-get_log_analysis(query)
+doubtstr = "\n3. On which days did more than \
+0.01 of requests lead to errors? \n"
+with open(filename, 'a') as file_object:
+    file_object.write(doubtstr)
+    file_object.write("answer: \n")
+get_log_analysis(query, 1)
 print("")
