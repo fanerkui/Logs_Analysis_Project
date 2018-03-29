@@ -1,35 +1,22 @@
 # Logs Analysis
 
-I use my code to generate a logs analysis report allowing help us analysis data from news database.
+This project be used to solve logs analysis question.
 
-## Installation and use
+## Requirements
+* vagrant
+* VirtualBox
 
-* Download log_analysis.py;
-* Move log_analysis.py to vagrant;
-* run python log_analysis.py commands;
-* open report.txt;
-* Then you can see a logs analysis report.
+## Question list
+* 1. What are the most popular three articles of all time?
+* 2. Who are the most popular article authors of all time?
+* 3. On which days did more than 1% of requests lead to errors?
 
-## Views
-
-* create a totalview
-
-create or replace view totalview as
-select date, COUNT(\*) as totalnum
-from (select DATE(time) as date
-from log
-) as datetable
-GROUP BY date;
-
-* create a errorview
-
-create or replace view errorview as
-select date, COUNT(\*) as errornum
-from (select DATE(time) as date
-from log
-where status = '404 NOT FOUND') as dateerror
-GROUP BY date
-ORDER BY date;
+## Installation
+* Run vagrant up and vagrant ssh to configure the virtual environment.
+* To load the data, cd into the vagrant directory and use the command psql -d news -f newsdata.sql.
+* Import the views from the command line by typing: psql -d news -f create_views.sql.
+* Run python log_analysis.py.
+* Look at report.txt.
 
 ## License
 
